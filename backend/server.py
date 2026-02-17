@@ -253,7 +253,6 @@ async def delete_document(doc_id: str):
 async def chat(request: ChatRequest):
     thoughts = []
     citations = []
-    memory_updates = []
 
     # Step 1: Weather detection
     weather_data = None

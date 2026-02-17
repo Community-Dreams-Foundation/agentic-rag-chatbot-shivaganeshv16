@@ -298,33 +298,17 @@ async def chat(request: ChatRequest):
     context_text = "\n\n".join([f"[Source: {c['source']}, Chunk {c['chunk_index']+1}]\n{c['text']}" for c in context_chunks])
 
     # Step 3: LLM call
-    thoughts.append(ThoughtStep(step="Generating Response", detail="Calling AI model with retrieved context..."))
+    thoughts.append(ThoughtStep(step="Generating Response", detail="Calling Gemini AI with retrieved context..."))
     system_msg = build_system_prompt(context_text, weather_data, has_context)
 
     try:
-        chat_llm = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
-            session_id=f"rag_{request.session_id}_{uuid.uuid4().hex[:8]}",
-            system_message=system_msg
-        )
-        chat_llm.with_model("openai", "gpt-4.1-nano")
-        response_text = await chat_llm.send_message(UserMessage(text=request.message))
+        model = genai.GenerativeModel('gemini-2.0-flash-lite')
+        full_prompt = f"{system_msg}\n\nUser question: {request.message}"
+        gemini_response = model.generate_content(full_prompt)
+        response_text = gemini_response.text
     except Exception as e:
         logger.error(f"LLM error: {e}")
         response_text = "I encountered an error generating a response. Please try again."
-
-    # Step 4: Memory decision
-    thoughts.append(ThoughtStep(step="Updating Memory", detail="Analyzing conversation for high-signal facts..."))
-    try:
-        memory_updates = await decide_memory(request.message, response_text)
-        if memory_updates:
-            for entry in memory_updates:
-                await write_memory(entry)
-            thoughts.append(ThoughtStep(step="Memory Written", detail=f"Extracted {len(memory_updates)} fact(s) to memory"))
-        else:
-            thoughts.append(ThoughtStep(step="No Memory Update", detail="No high-signal facts detected"))
-    except Exception as e:
-        logger.warning(f"Memory error: {e}")
 
     if not has_context and not is_weather:
         citations = []
@@ -333,7 +317,7 @@ async def chat(request: ChatRequest):
         response=response_text,
         citations=citations[:5],
         thoughts=thoughts,
-        memory_updates=memory_updates
+        memory_updates=[]
     )
 
 

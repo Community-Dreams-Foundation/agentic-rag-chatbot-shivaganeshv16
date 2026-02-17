@@ -342,9 +342,11 @@ async def sanity_check():
     artifacts_dir.mkdir(exist_ok=True)
     test_query = "What is this system about?"
     try:
-        model = genai.GenerativeModel('gemini-2.0-flash-lite')
-        response = model.generate_content(test_query)
-        response = response.text
+        result = gemini_client.models.generate_content(
+            model='gemini-2.0-flash-lite',
+            contents=test_query
+        )
+        response = result.text
     except Exception:
         response = "Sanity check - LLM unavailable"
 

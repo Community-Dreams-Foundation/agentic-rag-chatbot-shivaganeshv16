@@ -303,11 +303,23 @@ async def chat(request: ChatRequest):
 
     try:
         full_prompt = f"{system_msg}\n\nUser question: {request.message}"
-        gemini_response = gemini_client.models.generate_content(
-            model='gemini-2.5-flash',
-            contents=full_prompt
-        )
-        response_text = gemini_response.text
+        response_text = None
+        for attempt in range(3):
+            try:
+                gemini_response = gemini_client.models.generate_content(
+                    model='gemini-2.5-flash',
+                    contents=full_prompt
+                )
+                response_text = gemini_response.text
+                break
+            except Exception as retry_err:
+                if "429" in str(retry_err) and attempt < 2:
+                    logger.info(f"Rate limited, retrying in {(attempt+1)*20}s...")
+                    await asyncio.sleep((attempt + 1) * 20)
+                else:
+                    raise retry_err
+        if response_text is None:
+            response_text = "I encountered an error generating a response. Please try again."
     except Exception as e:
         logger.error(f"LLM error: {e}")
         response_text = "I encountered an error generating a response. Please try again."

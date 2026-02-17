@@ -7,6 +7,7 @@ import logging
 import json
 import uuid
 import httpx
+import asyncio
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional, Dict

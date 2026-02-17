@@ -301,9 +301,11 @@ async def chat(request: ChatRequest):
     system_msg = build_system_prompt(context_text, weather_data, has_context)
 
     try:
-        model = genai.GenerativeModel('gemini-2.0-flash-lite')
         full_prompt = f"{system_msg}\n\nUser question: {request.message}"
-        gemini_response = model.generate_content(full_prompt)
+        gemini_response = gemini_client.models.generate_content(
+            model='gemini-2.0-flash-lite',
+            contents=full_prompt
+        )
         response_text = gemini_response.text
     except Exception as e:
         logger.error(f"LLM error: {e}")

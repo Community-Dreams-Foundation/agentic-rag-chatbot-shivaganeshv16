@@ -341,13 +341,9 @@ async def sanity_check():
     artifacts_dir.mkdir(exist_ok=True)
     test_query = "What is this system about?"
     try:
-        chat_llm = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
-            session_id=f"sanity_{uuid.uuid4().hex[:8]}",
-            system_message="You are a helpful assistant. Respond briefly."
-        )
-        chat_llm.with_model("openai", "gpt-4.1-nano")
-        response = await chat_llm.send_message(UserMessage(text=test_query))
+        model = genai.GenerativeModel('gemini-2.0-flash-lite')
+        response = model.generate_content(test_query)
+        response = response.text
     except Exception:
         response = "Sanity check - LLM unavailable"
 

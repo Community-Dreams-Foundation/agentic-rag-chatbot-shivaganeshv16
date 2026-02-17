@@ -303,7 +303,7 @@ async def chat(request: ChatRequest):
     try:
         full_prompt = f"{system_msg}\n\nUser question: {request.message}"
         gemini_response = gemini_client.models.generate_content(
-            model='gemini-1.5-flash',
+            model='gemini-2.5-flash',
             contents=full_prompt
         )
         response_text = gemini_response.text
@@ -343,7 +343,7 @@ async def sanity_check():
     test_query = "What is this system about?"
     try:
         result = gemini_client.models.generate_content(
-            model='gemini-1.5-flash',
+            model='gemini-2.5-flash',
             contents=test_query
         )
         response = result.text

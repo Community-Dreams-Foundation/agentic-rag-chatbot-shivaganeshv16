@@ -38,3 +38,5 @@
 - [2026-02-17 21:56] Common microservice pitfalls to avoid are distributed monoliths, excessive synchronous inter-service communication, insufficient monitoring, and premature decomposition.
 
 - [2026-02-17 21:56] It's recommended to start with a simpler architecture and evolve to microservices based on actual needs, measuring everything to inform architectural decisions.
+
+- [2026-02-17 21:56] The assistant provides highly detailed and analytical reports, including raw data, rolling averages, and volatility analysis, even for simple queries like 'What's the weather like?'

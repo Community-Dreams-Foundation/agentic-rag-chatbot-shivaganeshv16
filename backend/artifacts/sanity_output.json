@@ -1,0 +1,8 @@
+{
+  "timestamp": "2026-02-17T21:24:13.647865+00:00",
+  "sample_query": "What is this system about?",
+  "agent_response": "Please provide more details or specify the system you are referring to so I can assist you effectively.",
+  "citations": [],
+  "documents_indexed": 1,
+  "status": "ok"
+}

@@ -36,7 +36,8 @@ for p in [USER_MEMORY_PATH, COMPANY_MEMORY_PATH]:
     if not p.exists():
         p.write_text(f"# {'User' if 'USER' in p.name else 'Company'} Memory\n\n")
 
-EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY', '')
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
+genai.configure(api_key=GEMINI_API_KEY)
 
 app = FastAPI()
 api_router = APIRouter(prefix="/api")

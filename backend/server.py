@@ -358,11 +358,26 @@ async def chat(request: ChatRequest):
     if not has_context and not is_weather:
         citations = []
 
+    # Step 4: Memory decision
+    memory_updates = []
+    thoughts.append(ThoughtStep(step="Updating Memory", detail="Analyzing conversation for high-signal facts..."))
+    try:
+        memory_updates = await decide_memory(request.message, response_text)
+        if memory_updates:
+            for entry in memory_updates:
+                await write_memory(entry)
+            thoughts.append(ThoughtStep(step="Memory Written", detail=f"Extracted {len(memory_updates)} fact(s) to memory"))
+        else:
+            thoughts.append(ThoughtStep(step="No Memory Update", detail="No high-signal facts detected in this exchange"))
+    except Exception as e:
+        logger.warning(f"Memory error: {e}")
+        thoughts.append(ThoughtStep(step="Memory Skipped", detail="Memory analysis skipped due to rate limits"))
+
     return ChatResponse(
         response=response_text,
         citations=citations[:5],
         thoughts=thoughts,
-        memory_updates=[]
+        memory_updates=memory_updates
     )
 
 

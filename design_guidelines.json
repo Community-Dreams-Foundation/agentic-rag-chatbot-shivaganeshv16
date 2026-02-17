@@ -1,0 +1,177 @@
+{
+  "identity": {
+    "name": "E1",
+    "persona": "The Anti-AI Designer",
+    "mission": "Create a High-Signal, Autonomous RAG Dashboard",
+    "vibe": "Swiss Precision x Apple Glassmorphism",
+    "principles": [
+      "Fusion over Imitation",
+      "Emotion First (Trust & Intelligence)",
+      "Content is King (High Density)",
+      "Zoom In (Details matter)",
+      "Negative Space (Breathing room)",
+      "Contrast (Hierarchy)"
+    ]
+  },
+  "typography": {
+    "font_family": {
+      "headings": "Manrope, sans-serif",
+      "body": "Inter, sans-serif",
+      "mono": "JetBrains Mono, monospace"
+    },
+    "weights": {
+      "light": 300,
+      "regular": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700
+    },
+    "sizes": {
+      "h1": "text-4xl md:text-5xl tracking-tight font-bold",
+      "h2": "text-3xl md:text-4xl tracking-tight font-semibold",
+      "h3": "text-2xl font-semibold tracking-tight",
+      "body": "text-base leading-relaxed text-slate-600",
+      "small": "text-sm text-slate-500",
+      "mono": "text-xs font-mono text-slate-500"
+    },
+    "installation": "Import fonts via Google Fonts in index.css: @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');"
+  },
+  "colors": {
+    "palette": {
+      "background": {
+        "main": "#F8F9FA",
+        "card": "#FFFFFF",
+        "sidebar": "#F1F5F9"
+      },
+      "foreground": {
+        "primary": "#0F172A",
+        "secondary": "#475569",
+        "muted": "#94A3B8"
+      },
+      "brand": {
+        "primary": "#2563EB",
+        "primary_hover": "#1D4ED8",
+        "accent": "#6366F1"
+      },
+      "functional": {
+        "success": "#10B981",
+        "warning": "#F59E0B",
+        "error": "#EF4444",
+        "info": "#3B82F6"
+      },
+      "border": {
+        "default": "#E2E8F0",
+        "active": "#94A3B8"
+      }
+    },
+    "gradients": {
+      "subtle_glow": "bg-gradient-to-tr from-blue-50 to-indigo-50",
+      "active_border": "bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500"
+    },
+    "rules": [
+      "NEVER use pure black (#000000). Use #0F172A (Slate 900).",
+      "NEVER use gradients for text legibility.",
+      "Primary brand color is for ACTIONS only."
+    ]
+  },
+  "layout": {
+    "structure": "Three-Pane Dashboard (Left: 20%, Center: 55%, Right: 25%)",
+    "grid_system": "CSS Grid with min-max widths. Mobile: Stacked.",
+    "spacing": {
+      "container_padding": "p-4 md:p-6 lg:p-8",
+      "element_gap": "gap-4 md:gap-6",
+      "section_gap": "gap-8"
+    },
+    "containers": {
+      "card": "bg-white rounded-xl border border-slate-200 shadow-sm",
+      "glass_panel": "bg-white/80 backdrop-blur-md border border-white/20 shadow-lg"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow transition-all duration-200 rounded-lg px-4 py-2 font-medium",
+      "secondary": "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-all duration-200 rounded-lg px-4 py-2 font-medium",
+      "ghost": "text-slate-600 hover:bg-slate-100 hover:text-slate-900 rounded-lg px-3 py-1.5 transition-colors"
+    },
+    "inputs": {
+      "default": "flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+    },
+    "chat_bubbles": {
+      "user": "bg-blue-600 text-white rounded-2xl rounded-tr-sm px-4 py-3 max-w-[80%]",
+      "agent": "bg-white border border-slate-200 text-slate-800 rounded-2xl rounded-tl-sm px-4 py-3 max-w-[80%] shadow-sm",
+      "thought_trace": "border-l-2 border-indigo-300 bg-indigo-50/50 pl-4 py-2 my-2 text-sm text-indigo-800 font-mono rounded-r-md"
+    },
+    "citations": {
+      "chip": "inline-flex items-center justify-center w-5 h-5 ml-1 text-[10px] font-bold text-blue-600 bg-blue-100 rounded-full cursor-pointer hover:bg-blue-200 transition-colors border border-blue-200"
+    },
+    "file_upload": {
+      "dropzone": "border-2 border-dashed border-slate-300 hover:border-blue-500 hover:bg-blue-50/50 rounded-xl transition-all duration-300 p-8 text-center cursor-pointer group",
+      "active_ring": "ring-2 ring-blue-500 ring-offset-2"
+    },
+    "memory_feed": {
+      "item": "p-3 mb-3 bg-white border border-slate-100 rounded-lg shadow-sm hover:shadow-md hover:border-blue-200 transition-all cursor-default text-sm"
+    }
+  },
+  "visual_enhancers": {
+    "shadows": {
+      "soft": "shadow-[0_2px_8px_rgba(0,0,0,0.04)]",
+      "medium": "shadow-[0_8px_24px_rgba(0,0,0,0.08)]",
+      "glow": "shadow-[0_0_16px_rgba(37,99,235,0.15)]"
+    },
+    "borders": {
+      "subtle": "border border-slate-200",
+      "highlight": "border border-blue-200"
+    },
+    "radius": {
+      "default": "rounded-lg",
+      "large": "rounded-xl",
+      "pill": "rounded-full"
+    }
+  },
+  "icons": {
+    "library": "lucide-react",
+    "style": "stroke-width={1.5} className='w-5 h-5'",
+    "usage": "Use Lucide icons for all UI elements. Examples: FileText for docs, Brain for memory, Sparkles for AI, UploadCloud for dropzone."
+  },
+  "accessibility": {
+    "rules": [
+      "Ensure 4.5:1 contrast ratio for normal text.",
+      "Use focus-visible rings for keyboard navigation.",
+      "All interactive elements MUST have aria-label if no text.",
+      "Use semantic HTML (main, aside, section, article)."
+    ],
+    "testing": {
+      "attribute": "data-testid",
+      "format": "kebab-case (e.g., chat-input-field, upload-dropzone)"
+    }
+  },
+  "motion": {
+    "transition": "transition-all duration-200 ease-out",
+    "enter": "animate-in fade-in slide-in-from-bottom-2 duration-300",
+    "hover": "hover:-translate-y-0.5"
+  },
+  "image_urls": {
+    "hero_abstract": "https://images.unsplash.com/photo-1764435447972-97ddaf8a701b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzB8MHwxfHNlYXJjaHwyfHxtaW5pbWFsaXN0JTIwYWJzdHJhY3QlMjB0ZWNobm9sb2d5JTIwbGlnaHQlMjBiYWNrZ3JvdW5kfGVufDB8fHx8MTc3MTM2MjgwOXww&ixlib=rb-4.1.0&q=85",
+    "tech_bg": "https://images.unsplash.com/photo-1764085793232-1d45cc8a598d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzB8MHwxfHNlYXJjaHw0fHxtaW5pbWFsaXN0JTIwYWJzdHJhY3QlMjB0ZWNobm9sb2d5JTIwbGlnaHQlMjBiYWNrZ3JvdW5kfGVufDB8fHx8MTc3MTM2MjgwOXww&ixlib=rb-4.1.0&q=85"
+  },
+  "instructions_to_main_agent": [
+    "1. INSTALL FONTS FIRST: Add the Google Fonts import to index.css immediately.",
+    "2. OVERRIDE TAILWIND: Update tailwind.config.js to extend the colors and fonts defined above.",
+    "3. COMPONENT STRATEGY: Use shadcn components as a base but HEAVILY customize them using the classes defined in 'components' section. Do not use default shadcn styles.",
+    "4. LAYOUT: Create a 3-column layout. Left Sidebar (Knowledge), Center (Chat), Right Sidebar (Memory).",
+    "5. STATE VISIBILITY: Every async action (upload, processing, thinking) must have a visual indicator (spinner, pulse, progress bar).",
+    "6. MEMORY FEED: This should feel 'alive'. Use a scrollable area with new items appearing at the top with a subtle fade-in animation.",
+    "7. NO TRANSPARENT BACKGROUNDS on headers: Use bg-white/80 backdrop-blur-md."
+  ],
+  "universal_guidelines": [
+    "Avoid 'AI Slop' (generic centered layouts). Use asymmetry and density.",
+    "Dark colors look good when used independently without gradients.",
+    "Don't make generic centered layouts.",
+    "Create depth through layered design elements.",
+    "Use glass-morphism effects with backdrop filters.",
+    "NEVER use transition: all.",
+    "NEVER center align the app container.",
+    "Always use modern button styles.",
+    "NEVER use AI assistant Emoji characters."
+  ]
+}

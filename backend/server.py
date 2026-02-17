@@ -179,6 +179,37 @@ async def write_memory(entry: MemoryEntry):
     })
 
 
+async def decide_memory(user_message: str, ai_response: str) -> List[MemoryEntry]:
+    """Use Gemini to decide if high-signal facts should be saved to memory"""
+    entries = []
+    try:
+        prompt = (
+            "Analyze this conversation and extract high-signal facts worth remembering.\n"
+            "Return ONLY a valid JSON array. Each item: "
+            '{\"should_write\": true, \"target\": \"user\" or \"company\", \"fact\": \"string\"}\n'
+            "- user target: user preferences, roles, recurring tasks, personal context\n"
+            "- company target: org patterns, discovered bugs, workflow insights, team learnings\n"
+            "- Only extract genuinely useful, reusable facts. Be selective.\n"
+            "- If nothing noteworthy, return: []\n"
+            "- Return ONLY the JSON array, no markdown, no explanation.\n\n"
+            f"User: {user_message}\nAssistant: {ai_response}"
+        )
+        result = gemini_client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=prompt
+        )
+        result_text = result.text.strip()
+        if result_text.startswith("```"):
+            result_text = result_text.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
+        decisions = json.loads(result_text)
+        for d in decisions:
+            if d.get('should_write'):
+                entries.append(MemoryEntry(target=d.get('target', 'user'), fact=d.get('fact', '')))
+    except Exception as e:
+        logger.warning(f"Memory decision error: {e}")
+    return entries
+
+
 def build_system_prompt(context: str, weather_data: Optional[Dict], has_context: bool) -> str:
     prompt = (
         "You are an Agentic RAG Knowledge Assistant for a SaaS platform.\n\n"

@@ -165,36 +165,6 @@ async def fetch_weather_data(query: str) -> Optional[Dict]:
         return None
 
 
-async def decide_memory(user_message: str, ai_response: str) -> List[MemoryEntry]:
-    entries = []
-    try:
-        mem_chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
-            session_id=f"memory_{uuid.uuid4().hex[:8]}",
-            system_message=(
-                "Analyze this conversation. Extract high-signal facts.\n"
-                "Return a JSON array: [{\"should_write\": true, \"target\": \"user\"|\"company\", \"fact\": \"string\"}]\n"
-                "user target = user preferences, roles, tasks. company target = org patterns, bugs, workflows.\n"
-                "Only extract genuinely useful facts. If nothing, return: []\n"
-                "Return ONLY valid JSON. No markdown wrapping."
-            )
-        )
-        mem_chat.with_model("openai", "gpt-4.1-nano")
-        result = await mem_chat.send_message(
-            UserMessage(text=f"User: {user_message}\nAssistant: {ai_response}")
-        )
-        result_text = result.strip()
-        if result_text.startswith("```"):
-            result_text = result_text.split("\n", 1)[-1].rsplit("```", 1)[0]
-        decisions = json.loads(result_text)
-        for d in decisions:
-            if d.get('should_write'):
-                entries.append(MemoryEntry(target=d.get('target', 'user'), fact=d.get('fact', '')))
-    except Exception as e:
-        logger.warning(f"Memory decision error: {e}")
-    return entries
-
-
 async def write_memory(entry: MemoryEntry):
     path = USER_MEMORY_PATH if entry.target == "user" else COMPANY_MEMORY_PATH
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M")

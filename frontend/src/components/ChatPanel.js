@@ -349,7 +349,7 @@ export default function ChatPanel({ sessionId, onMemoryUpdate }) {
           </button>
         </div>
         <p className="text-center text-[10px] text-slate-400 mt-2">
-          Powered by GPT-4.1 Nano via Emergent | Open-Meteo for weather
+          Powered by Gemini 2.0 Flash | Open-Meteo for weather
         </p>
       </div>
     </div>

@@ -24,7 +24,7 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const STEPS = ["Parsing", "Chunking", "Indexing"];
 
 export default function KnowledgePanel({
-  documents,
+  documents = [],
   setDocuments,
   onDocumentUploaded,
   onDocumentDeleted,
@@ -33,6 +33,12 @@ export default function KnowledgePanel({
   const [uploading, setUploading] = useState(false);
   const [uploadStep, setUploadStep] = useState(-1);
   const [uploadProgress, setUploadProgress] = useState(0);
+
+  const documentList = Array.isArray(documents)
+    ? documents
+    : Array.isArray(documents?.documents)
+    ? documents.documents
+    : [];
 
   useEffect(() => {
     fetchDocuments();
@@ -233,11 +239,11 @@ export default function KnowledgePanel({
       <div className="flex-1 overflow-hidden mt-3">
         <div className="px-4 pb-1">
           <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-            Indexed Documents ({documents.length})
+            Indexed Documents ({documentList.length})
           </p>
         </div>
         <ScrollArea className="h-[calc(100%-1.5rem)] px-4">
-          {documents.length === 0 ? (
+          {documentList.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <AlertCircle className="w-8 h-8 text-slate-300 mb-2" strokeWidth={1.5} />
               <p className="text-sm text-slate-400">No documents yet</p>
@@ -247,7 +253,7 @@ export default function KnowledgePanel({
             </div>
           ) : (
             <div className="space-y-2 pb-4">
-              {documents.map((doc) => (
+              {documentList.map((doc) => (
                 <div
                   key={doc.id}
                   data-testid={`document-item-${doc.id}`}

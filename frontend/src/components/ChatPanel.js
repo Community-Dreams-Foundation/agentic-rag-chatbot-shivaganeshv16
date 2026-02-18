@@ -355,7 +355,7 @@ export default function ChatPanel({ sessionId, onMemoryUpdate, onResetRef }) {
           </button>
         </div>
         <p className="text-center text-[10px] text-slate-400 mt-2">
-          Powered by Gemini 2.0 Flash | Open-Meteo for weather
+          Powered by Gemini 2.5 Flash | Open-Meteo for weather
         </p>
       </div>
     </div>

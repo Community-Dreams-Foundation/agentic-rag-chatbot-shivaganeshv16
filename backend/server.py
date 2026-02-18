@@ -1,7 +1,6 @@
 from fastapi import FastAPI, APIRouter, UploadFile, File, HTTPException
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 import json
@@ -10,7 +9,7 @@ import httpx
 import asyncio
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Any
 from datetime import datetime, timezone
 import chromadb
 from google import genai
@@ -18,10 +17,8 @@ from google import genai
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB
-mongo_url = os.environ['MONGO_URL']
-mongo_client = AsyncIOMotorClient(mongo_url)
-db = mongo_client[os.environ['DB_NAME']]
+DOCUMENTS_STORE: List[Dict[str, Any]] = []
+MEMORY_FEED: List[Dict[str, Any]] = []
 
 # ChromaDB in-memory
 chroma_client = chromadb.Client()
@@ -42,6 +39,20 @@ gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
+
+# --- CORS setup ---
+cors_raw = os.environ.get("CORS_ORIGINS", "http://localhost:3000")
+cors_origins = [origin.strip() for origin in cors_raw.split(",") if origin.strip()]
+if not cors_origins:
+    cors_origins = ["*"]
+allow_credentials = "*" not in cors_origins
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=cors_origins,
+    allow_credentials=allow_credentials,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -171,7 +182,7 @@ async def write_memory(entry: MemoryEntry):
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M")
     with open(path, 'a') as f:
         f.write(f"\n- [{timestamp}] {entry.fact}\n")
-    await db.memory_feed.insert_one({
+    MEMORY_FEED.append({
         "id": entry.id,
         "target": entry.target,
         "fact": entry.fact,
@@ -232,6 +243,16 @@ def build_system_prompt(context: str, weather_data: Optional[Dict], has_context:
 async def root():
     return {"message": "Agentic RAG Knowledge Assistant API"}
 
+@api_router.get("/health")
+async def health_check():
+    """A simple status endpoint to verify the backend is running."""
+    return {
+        "status": "ok",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "storage": "in-memory",
+        "documents_indexed": collection.count()
+    }
+
 
 @api_router.post("/upload")
 async def upload_document(file: UploadFile = File(...)):
@@ -259,14 +280,14 @@ async def upload_document(file: UploadFile = File(...)):
         "chunks": len(chunks),
         "uploaded_at": datetime.now(timezone.utc).isoformat()
     }
-    await db.documents.insert_one(doc_info)
+    DOCUMENTS_STORE.append(doc_info)
 
     return {"id": doc_id, "filename": file.filename, "chunks": len(chunks), "status": "indexed"}
 
 
 @api_router.get("/documents")
 async def list_documents():
-    return await db.documents.find({}, {"_id": 0}).to_list(100)
+    return DOCUMENTS_STORE.copy()
 
 
 @api_router.delete("/documents/{doc_id}")
@@ -277,7 +298,8 @@ async def delete_document(doc_id: str):
             collection.delete(ids=results['ids'])
     except Exception:
         pass
-    await db.documents.delete_one({"id": doc_id})
+    global DOCUMENTS_STORE
+    DOCUMENTS_STORE[:] = [doc for doc in DOCUMENTS_STORE if doc["id"] != doc_id]
     return {"status": "deleted"}
 
 
@@ -310,13 +332,17 @@ async def chat(request: ChatRequest):
                     results['metadatas'][0],
                     results['distances'][0]
                 ):
-                    if dist < 1.5:
-                        context_chunks.append({'text': doc, 'source': meta.get('source', 'unknown'), 'chunk_index': meta.get('chunk_index', 0)})
-                        citations.append(Citation(
-                            source=meta.get('source', 'unknown'),
-                            page=meta.get('chunk_index', 0) + 1,
-                            chunk=doc[:150] + ('...' if len(doc) > 150 else '')
-                        ))
+                    context_chunks.append({
+                        'text': doc,
+                        'source': meta.get('source', 'unknown'),
+                        'chunk_index': meta.get('chunk_index', 0),
+                        'distance': dist
+                    })
+                    citations.append(Citation(
+                        source=meta.get('source', 'unknown'),
+                        page=meta.get('chunk_index', 0) + 1,
+                        chunk=doc[:150] + ('...' if len(doc) > 150 else '')
+                    ))
     except Exception as e:
         logger.warning(f"ChromaDB search error: {e}")
 
@@ -392,7 +418,7 @@ async def get_memory(memory_type: str):
 
 @api_router.get("/memory-feed")
 async def get_memory_feed():
-    return await db.memory_feed.find({}, {"_id": 0}).sort("timestamp", -1).to_list(50)
+    return sorted(MEMORY_FEED, key=lambda entry: entry["timestamp"], reverse=True)[:50]
 
 
 @api_router.delete("/reset")
@@ -409,9 +435,8 @@ async def reset_all():
     except Exception as e:
         logger.warning(f"ChromaDB reset error: {e}")
 
-    # Clear MongoDB collections
-    await db.documents.delete_many({})
-    await db.memory_feed.delete_many({})
+    DOCUMENTS_STORE.clear()
+    MEMORY_FEED.clear()
 
     # Reset memory files
     USER_MEMORY_PATH.write_text("# User Memory\n\n")
@@ -439,7 +464,7 @@ async def sanity_check():
         "sample_query": test_query,
         "agent_response": response,
         "citations": [],
-        "documents_indexed": collection.count(),
+        "documents_indexed": len(DOCUMENTS_STORE),
         "status": "ok"
     }
     with open(artifacts_dir / "sanity_output.json", "w") as f:
@@ -448,16 +473,3 @@ async def sanity_check():
 
 
 app.include_router(api_router)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    mongo_client.close()

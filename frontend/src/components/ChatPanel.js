@@ -32,13 +32,19 @@ import {
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-export default function ChatPanel({ sessionId, onMemoryUpdate }) {
+export default function ChatPanel({ sessionId, onMemoryUpdate, onResetRef }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [copiedId, setCopiedId] = useState(null);
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (onResetRef) {
+      onResetRef.current = () => setMessages([]);
+    }
+  }, [onResetRef]);
 
   useEffect(() => {
     if (scrollRef.current) {

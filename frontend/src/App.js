@@ -146,7 +146,7 @@ function App() {
             data-testid="memory-panel"
             className="w-[280px] flex-shrink-0 border-l border-slate-200 bg-white overflow-y-auto"
           >
-            <MemoryFeed memoryEntries={memoryEntries} />
+            <MemoryFeed key={sessionId} memoryEntries={memoryEntries} />
           </aside>
         </main>
 

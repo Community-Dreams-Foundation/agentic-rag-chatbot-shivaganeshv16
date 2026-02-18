@@ -134,8 +134,10 @@ function App() {
             className="flex-1 flex flex-col min-w-0 bg-[#F8F9FA]"
           >
             <ChatPanel
+              key={sessionId}
               sessionId={sessionId}
               onMemoryUpdate={handleMemoryUpdate}
+              onResetRef={chatResetRef}
             />
           </section>
 

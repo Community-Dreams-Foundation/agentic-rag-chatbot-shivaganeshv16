@@ -35,13 +35,14 @@ for p in [USER_MEMORY_PATH, COMPANY_MEMORY_PATH]:
         p.write_text(f"# {'User' if 'USER' in p.name else 'Company'} Memory\n\n")
 
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
+FRONT_END_URL = os.environ.get('FRONT_END_URL','')
 gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
 
 # --- CORS setup ---
-cors_raw = os.environ.get("CORS_ORIGINS", "http://localhost:3000")
+cors_raw = os.environ.get("CORS_ORIGINS", FRONT_END_URL)
 cors_origins = [origin.strip() for origin in cors_raw.split(",") if origin.strip()]
 if not cors_origins:
     cors_origins = ["*"]

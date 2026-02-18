@@ -73,6 +73,24 @@ function App() {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    data-testid="reset-all-btn"
+                    onClick={handleResetAll}
+                    disabled={resetting}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 hover:border-red-300 transition-colors duration-200 disabled:opacity-50"
+                  >
+                    {resetting ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" strokeWidth={1.5} />
+                    ) : (
+                      <RotateCcw className="w-3.5 h-3.5" strokeWidth={1.5} />
+                    )}
+                    <span className="text-xs font-medium">Reset</span>
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>Clear all docs, memory & chat</TooltipContent>
+              </Tooltip>
               <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200">
                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="text-xs font-medium text-emerald-700">

@@ -1,16 +1,23 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import "@/App.css";
+import axios from "axios";
+import { toast } from "sonner";
 import KnowledgePanel from "@/components/KnowledgePanel";
 import ChatPanel from "@/components/ChatPanel";
 import MemoryFeed from "@/components/MemoryFeed";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Brain, Layers, Sparkles } from "lucide-react";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { Brain, Layers, Sparkles, RotateCcw, Loader2 } from "lucide-react";
+
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 function App() {
   const [documents, setDocuments] = useState([]);
   const [memoryEntries, setMemoryEntries] = useState([]);
-  const [sessionId] = useState(() => crypto.randomUUID());
+  const [sessionId, setSessionId] = useState(() => crypto.randomUUID());
+  const [resetting, setResetting] = useState(false);
+  const chatResetRef = useRef(null);
 
   const handleDocumentUploaded = useCallback((doc) => {
     setDocuments((prev) => [...prev, doc]);

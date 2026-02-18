@@ -395,6 +395,31 @@ async def get_memory_feed():
     return await db.memory_feed.find({}, {"_id": 0}).sort("timestamp", -1).to_list(50)
 
 
+@api_router.delete("/reset")
+async def reset_all():
+    """Clear all documents, memory files, and memory feed"""
+    global collection
+    # Clear ChromaDB
+    try:
+        chroma_client.delete_collection("documents")
+        collection = chroma_client.get_or_create_collection(
+            name="documents",
+            metadata={"hnsw:space": "cosine"}
+        )
+    except Exception as e:
+        logger.warning(f"ChromaDB reset error: {e}")
+
+    # Clear MongoDB collections
+    await db.documents.delete_many({})
+    await db.memory_feed.delete_many({})
+
+    # Reset memory files
+    USER_MEMORY_PATH.write_text("# User Memory\n\n")
+    COMPANY_MEMORY_PATH.write_text("# Company Memory\n\n")
+
+    return {"status": "reset", "message": "All data cleared successfully"}
+
+
 @api_router.get("/sanity")
 async def sanity_check():
     artifacts_dir = ROOT_DIR / "artifacts"

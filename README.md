@@ -1,9 +1,12 @@
 # Agentic RAG Knowledge Assistant
 
 ## Participant Info (Required)
-- **Full Name:** [YOUR NAME]
-- **Email:** [YOUR EMAIL]
-- **GitHub Username:** [YOUR GITHUB USERNAME]
+- **Full Name:** Shiva Ganesh Vankdoth
+- **Email:** shivaganeshv16@gmail.com
+- **GitHub Username:** shivaganeshv16
+
+## Live Website URL
+https://agentic-rag-bot.vercel.app/
 
 ## Video Walkthrough
 [PASTE YOUR LINK HERE]
@@ -26,18 +29,18 @@ pip install -r requirements.txt
 #   GEMINI_API_KEY="your-gemini-api-key"
 
 # 4. Start backend
-uvicorn server:app --host 0.0.0.0 --port 8001
+python -m uvicorn server:app --host 0.0.0.0 --port 8001
 
 # 5. Install frontend dependencies (in another terminal)
 cd frontend
-yarn install
+npm install
 
 # 6. Set up frontend env
 # Edit frontend/.env:
 #   REACT_APP_BACKEND_URL=http://localhost:8001
 
 # 7. Start frontend
-yarn start
+npm start
 
 # 8. Open http://localhost:3000 in your browser
 

@@ -33,6 +33,23 @@ function App() {
     }
   }, []);
 
+  const handleResetAll = async () => {
+    if (resetting) return;
+    setResetting(true);
+    try {
+      await axios.delete(`${API}/reset`);
+      setDocuments([]);
+      setMemoryEntries([]);
+      setSessionId(crypto.randomUUID());
+      if (chatResetRef.current) chatResetRef.current();
+      toast.success("All data cleared. Fresh start!");
+    } catch (e) {
+      toast.error("Failed to reset. Try again.");
+    } finally {
+      setResetting(false);
+    }
+  };
+
   return (
     <TooltipProvider>
       <div className="h-screen flex flex-col bg-[#F8F9FA] overflow-hidden">

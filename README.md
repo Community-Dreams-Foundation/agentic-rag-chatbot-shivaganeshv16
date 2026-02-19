@@ -9,13 +9,13 @@
 https://agentic-rag-bot.vercel.app/
 
 ## Video Walkthrough
-[PASTE YOUR LINK HERE]
+https://drive.google.com/drive/u/0/folders/1YBfluwEd0CnWCjWRJQcttXO8ZH2jXQa4
 
 ## Quick Start
 
 ```bash
 # 1. Clone the repo
-git clone <your-repo-url>
+git clone <repo-url>
 cd agentic-rag-chatbot
 
 # 2. Install backend dependencies
@@ -24,9 +24,9 @@ pip install -r requirements.txt
 
 # 3. Set up environment variables
 # Edit backend/.env with your keys:
-#   MONGO_URL="mongodb://localhost:27017"
-#   DB_NAME="test_database"
 #   GEMINI_API_KEY="your-gemini-api-key"
+#   FRONT_END_URL=http://localhost:3000
+#   CORS_ORIGINS=http://localhost:3000
 
 # 4. Start backend
 python -m uvicorn server:app --host 0.0.0.0 --port 8001
@@ -46,8 +46,11 @@ npm start
 
 # 9. Run sanity check
 cd ..
-make sanity
+make sanity 
+If Terminal
+Invoke-WebRequest -Uri http://localhost:8001/api/sanity | Select-Object -ExpandProperty Content | python -m json.tool
 ```
+
 
 ## Features Implemented
 
@@ -82,7 +85,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed architecture overview.
 - **Backend**: FastAPI, Python 3.11
 - **Vector Store**: ChromaDB (in-memory)
 - **LLM**: Google Gemini 2.5 Flash (free tier)
-- **Database**: MongoDB (document metadata, memory feed)
+- **Storage**: Code Level Memory (document metadata, memory feed)
 - **Weather API**: Open-Meteo (free, no key required)
 
 ## Evaluation
